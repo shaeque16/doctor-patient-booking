@@ -6,6 +6,8 @@ import com.example.RxNow.DoctorPatientBooking.entity.Appointment;
 import com.example.RxNow.DoctorPatientBooking.entity.Doctor;
 import com.example.RxNow.DoctorPatientBooking.entity.Patient;
 import com.example.RxNow.DoctorPatientBooking.entity.enums.AppointmentStatus;
+import com.example.RxNow.DoctorPatientBooking.exception.AppointmentConflictException;
+import com.example.RxNow.DoctorPatientBooking.exception.NotFoundException;
 import com.example.RxNow.DoctorPatientBooking.repositories.AppointmentRepository;
 import com.example.RxNow.DoctorPatientBooking.repositories.DoctorRepository;
 import com.example.RxNow.DoctorPatientBooking.repositories.PatientRepository;
@@ -32,12 +34,10 @@ public class AppointmentService {
     public AppointmentResponseDto bookAppointment(AppointmentRequestDto requestDto) {
 
         Doctor doctor = doctorRepository.findById(requestDto.getDoctorId())
-                .orElseThrow(() ->new RuntimeException("Doctor Not Found" + requestDto.getDoctorId()));
-
-        System.out.println("Looking for Doctor ID: " + requestDto.getDoctorId());
+                .orElseThrow(() ->new NotFoundException("Doctor Not Found"));
 
         Patient patient = patientRepository.findById(requestDto.getPatientId())
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
+                .orElseThrow(() -> new NotFoundException("Patient not found"));
 
         checkAvailability(doctor, requestDto.getAppointmentDate(),requestDto.getAppointmentStartTime(), requestDto.getAppointmentEndTime());
 
@@ -57,7 +57,7 @@ public class AppointmentService {
     private void checkAvailability(Doctor doctor, LocalDate appointmentDate, LocalTime startTime, LocalTime endTime) {
 
         if(startTime.isBefore(doctor.getAvailableFrom()) || endTime.isAfter(doctor.getAvailableTo())){
-            throw new IllegalArgumentException("Requested time slot is outside of doctor availability");
+            throw new AppointmentConflictException("Requested time slot is outside of doctor availability");
         }
 
         List<Appointment> existingAppointment = appointmentRepository.findByDoctorAndAppointmentDate(doctor,appointmentDate);
@@ -65,7 +65,7 @@ public class AppointmentService {
         for (Appointment appointment : existingAppointment) {
             boolean overlapTiming = !(endTime.isBefore(appointment.getAppointmentStartTime()) || startTime.isAfter(appointment.getAppointmentEndTime()));
             if(overlapTiming){
-                throw new IllegalArgumentException("Doctor is already appointed with other patient at this time period");
+                throw new AppointmentConflictException("Doctor is already appointed with other patient at this time period");
             }
         }
     }

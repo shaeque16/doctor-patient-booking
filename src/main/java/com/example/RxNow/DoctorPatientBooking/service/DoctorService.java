@@ -2,6 +2,7 @@ package com.example.RxNow.DoctorPatientBooking.service;
 
 import com.example.RxNow.DoctorPatientBooking.dto.DoctorResponseDto;
 import com.example.RxNow.DoctorPatientBooking.entity.Doctor;
+import com.example.RxNow.DoctorPatientBooking.exception.NotFoundException;
 import com.example.RxNow.DoctorPatientBooking.repositories.DoctorRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -25,7 +26,7 @@ public class DoctorService {
 
     public DoctorResponseDto getDoctorById(Long id) {
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(("Doctor not found")));
+                .orElseThrow(() -> new NotFoundException(("Doctor not found")));
         return mapToResposneDto(doctor);
     }
 
