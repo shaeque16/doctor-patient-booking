@@ -3,6 +3,7 @@ package com.example.RxNow.DoctorPatientBooking.controller;
 import com.example.RxNow.DoctorPatientBooking.dto.AppointmentRequestDto;
 import com.example.RxNow.DoctorPatientBooking.dto.AppointmentResponseDto;
 import com.example.RxNow.DoctorPatientBooking.service.AppointmentService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public AppointmentResponseDto bookAppointment(@RequestBody AppointmentRequestDto requestDto){
+    public AppointmentResponseDto bookAppointment(@Valid @RequestBody AppointmentRequestDto requestDto){
         return appointmentService.bookAppointment(requestDto);
     }
 

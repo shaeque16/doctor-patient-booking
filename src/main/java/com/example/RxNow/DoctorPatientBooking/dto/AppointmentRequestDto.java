@@ -1,6 +1,7 @@
 package com.example.RxNow.DoctorPatientBooking.dto;
 
 import com.example.RxNow.DoctorPatientBooking.entity.enums.AppointmentStatus;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,10 +10,19 @@ import java.time.LocalTime;
 @Data
 public class AppointmentRequestDto {
 
+    @NotNull(message = "Doctor id is required")
     private Long doctorId;
+
+    @NotNull(message = "Patient id is required")
     private Long patientId;
+
+    @NotNull(message = "Appointment date is required")
     private LocalDate appointmentDate;
+
+    @NotNull(message = "Appointment start time is required")
     private LocalTime appointmentStartTime;
+
+    @NotNull(message = "Appointment end time is required")
     private LocalTime appointmentEndTime;
     private AppointmentStatus status;
 

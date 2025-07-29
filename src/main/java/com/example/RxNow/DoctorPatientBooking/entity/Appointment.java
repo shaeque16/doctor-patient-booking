@@ -2,7 +2,7 @@ package com.example.RxNow.DoctorPatientBooking.entity;
 
 import com.example.RxNow.DoctorPatientBooking.entity.enums.AppointmentStatus;
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,19 +15,27 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Doctor is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
+    @NotNull(message = "Patient is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
+    @NotNull(message = "Appointment date is required")
     private LocalDate appointmentDate;
 
+    @NotNull(message = "Appointment start time is required")
     private LocalTime appointmentStartTime;
 
+    @NotNull(message = "Appointment end time is required")
     private LocalTime appointmentEndTime;
+
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status;
 
     public Appointment(){
 
@@ -89,7 +97,5 @@ public class Appointment {
         this.appointmentStartTime = appointmentStartTime;
     }
 
-    @Enumerated(EnumType.STRING)
-    private AppointmentStatus status;
 
 }
