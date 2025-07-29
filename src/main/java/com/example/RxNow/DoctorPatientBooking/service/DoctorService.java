@@ -4,6 +4,9 @@ import com.example.RxNow.DoctorPatientBooking.dto.DoctorResponseDto;
 import com.example.RxNow.DoctorPatientBooking.entity.Doctor;
 import com.example.RxNow.DoctorPatientBooking.exception.NotFoundException;
 import com.example.RxNow.DoctorPatientBooking.repositories.DoctorRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,10 +21,10 @@ public class DoctorService {
     }
 
 
-    public List<DoctorResponseDto> getAllDoctors(){
-        return doctorRepository.findAll().stream()
-                .map(this::mapToResposneDto)
-                .collect(Collectors.toList());
+    public Page<DoctorResponseDto> getAllDoctors(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return doctorRepository.findAll(pageable)
+                .map(this::mapToResposneDto);
     }
 
     public DoctorResponseDto getDoctorById(Long id) {

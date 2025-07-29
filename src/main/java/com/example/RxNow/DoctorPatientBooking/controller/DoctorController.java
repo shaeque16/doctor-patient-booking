@@ -2,12 +2,9 @@ package com.example.RxNow.DoctorPatientBooking.controller;
 
 import com.example.RxNow.DoctorPatientBooking.dto.DoctorResponseDto;
 import com.example.RxNow.DoctorPatientBooking.service.DoctorService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/doctors")
@@ -20,8 +17,9 @@ public class DoctorController {
     }
 
     @GetMapping
-    public List<DoctorResponseDto> getAllDoctors() {
-        return doctorService.getAllDoctors();
+    public Page<DoctorResponseDto> getAllDoctors(@RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "5") int size) {
+        return doctorService.getAllDoctors(page,size);
     }
 
     @GetMapping("/{id}")
