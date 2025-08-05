@@ -11,6 +11,7 @@ import com.example.RxNow.DoctorPatientBooking.exception.NotFoundException;
 import com.example.RxNow.DoctorPatientBooking.repositories.AppointmentRepository;
 import com.example.RxNow.DoctorPatientBooking.repositories.DoctorRepository;
 import com.example.RxNow.DoctorPatientBooking.repositories.PatientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,17 +20,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
-
-    public AppointmentService(AppointmentRepository appointmentRepository, DoctorRepository doctorRepository, PatientRepository patientRepository) {
-        this.appointmentRepository = appointmentRepository;
-        this.doctorRepository = doctorRepository;
-        this.patientRepository = patientRepository;
-    }
 
     public AppointmentResponseDto bookAppointment(AppointmentRequestDto requestDto) {
 
@@ -84,22 +80,22 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
-
     private AppointmentResponseDto mapToResposneDto(Appointment appointment) {
-        return new AppointmentResponseDto(
-                appointment.getId(),
-                appointment.getDoctor().getId(),
-                appointment.getDoctor().getName(),
-                appointment.getDoctor().getSpecialization(),
-                appointment.getPatient().getId(),
-                appointment.getPatient().getName(),
-                appointment.getPatient().getPhone(),
-                appointment.getPatient().getEmail(),
-                appointment.getAppointmentDate(),
-                appointment.getAppointmentStartTime(),
-                appointment.getAppointmentEndTime(),
-                appointment.getStatus()
-        );
+        return  AppointmentResponseDto.builder()
+                .id(appointment.getId())
+                .doctorId(appointment.getDoctor().getId())
+                .doctorName(appointment.getDoctor().getName())
+                .specialization(appointment.getDoctor().getSpecialization())
+                .patientId(appointment.getPatient().getId())
+                .patientName(appointment.getPatient().getName())
+                .patientPhone(appointment.getPatient().getPhone())
+                .patientEmail(appointment.getPatient().getEmail())
+                .appointmentDate(appointment.getAppointmentDate())
+                .appointmentStartTime(appointment.getAppointmentStartTime())
+                .appointmentEndTime(appointment.getAppointmentEndTime())
+                .status(appointment.getStatus())
+                .build();
+
     }
 
 }
